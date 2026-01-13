@@ -248,6 +248,34 @@ function playStream(url,name){
 }
 
 loadM3U();
+function lockLandscape() {
+  if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock("landscape").catch(()=>{});
+  }
+}
+
+function unlockOrientation() {
+  if (screen.orientation && screen.orientation.unlock) {
+    screen.orientation.unlock();
+  }
+}
+
+/* Video.js fullscreen events */
+player.on("fullscreenchange", function () {
+  if (player.isFullscreen()) {
+    lockLandscape();
+  } else {
+    unlockOrientation();
+  }
+});
+
+/* iOS fallback (ไม่บังคับได้ แค่ช่วยไม่พัง) */
+player.on("webkitbeginfullscreen", function () {
+  lockLandscape();
+});
+player.on("webkitendfullscreen", function () {
+  unlockOrientation();
+});
 </script>
 </body>
 </html>
