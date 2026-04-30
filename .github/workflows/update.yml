@@ -1,0 +1,33 @@
+name: Update IPTV Playlist
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      - name: Generate playlist
+        run: python generate_m3u.py
+
+      - name: Commit playlist
+        run: |
+          git config --local user.email "bot@github.com"
+          git config --local user.name "github-bot"
+          git add munin.m3u
+          git commit -m "update munin playlist" || echo "no changes"
+          git push
