@@ -3,7 +3,7 @@ name: Update IPTV Playlist
 on:
   schedule:
     - cron: "*/1 * * * *"
-  workflow_dispatch:
+  workflow_dispatch
 
 jobs:
   update:
@@ -19,7 +19,7 @@ jobs:
           python-version: "3.x"
 
       - name: Install packages
-        run: pip install -r requirements.txt
+        run: pip install requests
 
       - name: Generate playlist
         run: python generate_m3u.py
@@ -27,7 +27,7 @@ jobs:
       - name: Commit playlist
         run: |
           git config --local user.email "bot@github.com"
-          git config --local user.name "github-bot"
+          git config --local user.name "github-actions"
           git add munin.m3u
-          git commit -m "update munin playlist" || echo "no changes"
+          git commit -m "update munin playlist" || exit 0
           git push
